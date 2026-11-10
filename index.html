@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Uma história por dia</title>
+  <meta name="description" content="Todo dia, uma história inteira da Bíblia.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+  <main class="pagina">
+    <nav class="dias">
+      <button id="anterior" aria-label="Dia anterior">‹</button>
+      <span id="data"></span>
+      <button id="proximo" aria-label="Próximo dia">›</button>
+    </nav>
+
+    <article id="historia" aria-live="polite">
+      <h1 id="titulo"></h1>
+      <p id="referencia" class="referencia"></p>
+      <div id="texto" class="texto"><p class="carregando">Abrindo o livro…</p></div>
+
+      <div class="ornamento" aria-hidden="true">❦</div>
+
+      <section class="leitura">
+        <h2>Uma leitura possível</h2>
+        <p id="leitura"></p>
+      </section>
+    </article>
+
+    <div class="acoes">
+      <button id="lido" class="botao">Li hoje</button>
+      <button id="compartilhar" class="botao">Compartilhar</button>
+    </div>
+    <p id="sequencia" class="sequencia"></p>
+
+    <footer>
+      Texto bíblico: <a href="https://ebible.org/Scriptures/details.php?id=porbr2018" target="_blank" rel="noopener">Bíblia Livre</a>,
+      via <a href="https://bible.helloao.org" target="_blank" rel="noopener">bible.helloao.org</a>.
+    </footer>
+  </main>
+
+  <script src="historias.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
