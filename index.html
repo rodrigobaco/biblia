@@ -2,40 +2,81 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Uma história por dia</title>
   <meta name="description" content="Todo dia, uma história inteira da Bíblia.">
+  <meta name="theme-color" content="#ebe3d3" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#141210" media="(prefers-color-scheme: dark)">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icone-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="icone-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="História do dia">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="estilo.css">
 </head>
 <body>
   <main class="pagina">
-    <nav class="dias">
-      <button id="anterior" aria-label="Dia anterior">‹</button>
-      <span id="data"></span>
-      <button id="proximo" aria-label="Próximo dia">›</button>
+    <header class="topo">
+      <span class="marca"><span aria-hidden="true">❦</span> Uma história por dia</span>
+    </header>
+
+    <nav class="dias" aria-label="Escolher dia">
+      <button id="anterior" class="seta" aria-label="Dia anterior">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <div class="data">
+        <span id="quando" class="quando"></span>
+        <span id="data" class="dia"></span>
+      </div>
+      <button id="proximo" class="seta" aria-label="Próximo dia">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+      </button>
     </nav>
 
-    <article id="historia" aria-live="polite">
+    <article class="folha" aria-live="polite">
+      <p id="testamento" class="testamento"></p>
       <h1 id="titulo"></h1>
       <p id="referencia" class="referencia"></p>
+
+      <aside class="contexto">
+        <span class="rotulo">Antes da história</span>
+        <p id="contexto"></p>
+      </aside>
+
       <div id="texto" class="texto"><p class="carregando">Abrindo o livro…</p></div>
 
-      <div class="ornamento" aria-hidden="true">❦</div>
+      <div class="ornamento" aria-hidden="true"><span></span>❦<span></span></div>
 
       <section class="leitura">
-        <h2>Uma leitura possível</h2>
+        <span class="rotulo">Uma leitura possível</span>
         <p id="leitura"></p>
       </section>
+
+      <div class="acoes">
+        <button id="lido" class="botao">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+          <span>Li hoje</span>
+        </button>
+        <button id="compartilhar" class="botao">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4M7.5 8.5L12 4l4.5 4.5M5 13v6h14v-6"/></svg>
+          <span>Compartilhar</span>
+        </button>
+      </div>
     </article>
 
-    <div class="acoes">
-      <button id="lido" class="botao">Li hoje</button>
-      <button id="compartilhar" class="botao">Compartilhar</button>
-    </div>
     <p id="sequencia" class="sequencia"></p>
+
+    <div id="instalar-box" class="instalar" hidden>
+      <button id="instalar" class="botao discreto" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14"/></svg>
+        <span>Instalar no celular</span>
+      </button>
+      <p id="dica-ios" class="dica" hidden>No iPhone: toque em <strong>Compartilhar</strong> e depois em <strong>Adicionar à Tela de Início</strong>.</p>
+    </div>
 
     <footer>
       Texto bíblico: <a href="https://ebible.org/Scriptures/details.php?id=porbr2018" target="_blank" rel="noopener">Bíblia Livre</a>,

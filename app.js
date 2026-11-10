@@ -83,17 +83,20 @@
   // ---------- tela ----------
   let diaAtual = hoje(), historiaAtual = null, textoAtual = null, pedido = 0;
 
-  function rotuloData(chave) {
+  const NOVO_TESTAMENTO = new Set(["MAT", "MRK", "LUK", "JHN", "ACT", "ROM", "1CO", "2CO", "GAL", "EPH", "PHP", "COL", "1TH", "2TH", "1TI", "2TI", "TIT", "PHM", "HEB", "JAS", "1PE", "2PE", "1JN", "2JN", "3JN", "JUD", "REV"]);
+
+  function quando(chave) {
     if (chave === hoje()) return "Hoje";
     if (chave === somarDias(hoje(), -1)) return "Ontem";
-    return dataDe(chave).toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" });
+    const dias = numeroDoDia(hoje()) - numeroDoDia(chave);
+    return "Há " + dias + " dias";
   }
 
   function atualizarLido() {
     const feito = lidos.has(diaAtual), ehHoje = diaAtual === hoje();
     const b = $("lido");
     b.classList.toggle("feito", feito);
-    b.textContent = feito ? "✓ Lido" : ehHoje ? "Li hoje" : "Marcar como lido";
+    b.querySelector("span").textContent = feito ? "Lido" : ehHoje ? "Li hoje" : "Marcar como lido";
     const n = diasSeguidos();
     $("sequencia").textContent = n === 0 ? "" : n === 1 ? "1 dia de leitura" : n + " dias seguidos";
   }
@@ -105,10 +108,13 @@
     const h = historiaDoDia(chave);
     historiaAtual = h; textoAtual = null;
 
-    $("data").textContent = rotuloData(chave);
+    $("quando").textContent = quando(chave);
+    $("data").textContent = dataDe(chave).toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" });
     $("proximo").disabled = chave >= hoje();
+    $("testamento").textContent = NOVO_TESTAMENTO.has(h.livro) ? "Novo Testamento" : "Antigo Testamento";
     $("titulo").textContent = h.titulo;
     $("referencia").textContent = "";
+    $("contexto").textContent = h.contexto;
     $("leitura").textContent = h.leitura;
     $("texto").innerHTML = '<p class="carregando">Abrindo o livro…</p>';
     document.title = h.titulo + " · Uma história por dia";
@@ -121,15 +127,19 @@
       $("referencia").textContent = referencia(t.livro, h);
       const div = $("texto");
       div.innerHTML = "";
-      for (const par of t.paragrafos) {
+      t.paragrafos.forEach((par, ip) => {
         const p = document.createElement("p");
         par.forEach((v, i) => {
-          const sup = document.createElement("sup");
-          sup.textContent = v.numero;
-          p.append(sup, v.texto + (i < par.length - 1 ? " " : ""));
+          // o primeiro versículo fica sem número, para a letra capitular
+          if (ip > 0 || i > 0) {
+            const sup = document.createElement("sup");
+            sup.textContent = v.numero;
+            p.append(sup);
+          }
+          p.append(v.texto + (i < par.length - 1 ? " " : ""));
         });
         div.append(p);
-      }
+      });
     } catch (e) {
       if (meu !== pedido) return;
       $("texto").innerHTML = '<p class="erro">Não foi possível carregar o texto agora. Verifique a conexão e tente de novo.</p>';
@@ -171,6 +181,31 @@
       window.open("https://wa.me/?text=" + encodeURIComponent(msg + (url ? "\n\n" + url : "")), "_blank", "noopener");
     }
   });
+
+  // ---------- app instalável ----------
+  if ("serviceWorker" in navigator && location.protocol === "https:") {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  }
+  const instalado = matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+  let pedidoInstalar = null;
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    pedidoInstalar = e;
+    $("instalar-box").hidden = false;
+    $("instalar").hidden = false;
+  });
+  $("instalar").addEventListener("click", async () => {
+    if (!pedidoInstalar) return;
+    pedidoInstalar.prompt();
+    await pedidoInstalar.userChoice.catch(() => {});
+    pedidoInstalar = null;
+    $("instalar-box").hidden = true;
+  });
+  window.addEventListener("appinstalled", () => { $("instalar-box").hidden = true; });
+  if (!instalado && /iphone|ipad|ipod/i.test(navigator.userAgent)) {
+    $("instalar-box").hidden = false;
+    $("dica-ios").hidden = false;
+  }
 
   mostrar(location.hash.slice(1));
 })();
